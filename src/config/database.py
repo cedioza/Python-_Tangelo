@@ -14,7 +14,7 @@ class CountriesDb() :
         
     def showTable(self):
         try:
-            self.abrir()
+            self.open()
             self.cursor.execute(f"SELECT * FROM {self.table}")
             rows = self.cursor.fetchall()
             return rows        
@@ -37,6 +37,7 @@ class CountriesDb() :
 
     def createTable(self):
         try :
+            self.cleanTable()
             self.cursor.execute(f""" CREATE TABLE IF NOT EXISTS {self.table}  (
                                       codigo integer primary key autoincrement,
                                       Región text,
@@ -54,8 +55,7 @@ class CountriesDb() :
         try :
 
              
-            self.abrir()
-            self.cleanTable()
+            self.open()
             self.cursor.execute(f"INSERT INTO {self.table} (Región,City,Language,Time) VALUES (?, ?, ? ,?)",list)
             self.con.commit()
         except Exception as error:
@@ -63,7 +63,7 @@ class CountriesDb() :
         finally:
             self.closeConnection()
 
-    def abrir(self):
+    def open(self):
         try:
             self.con = sqlite3.connect("./database/db_contry.db")
             self.cursor = self.con.cursor() 
