@@ -10,7 +10,6 @@ class CountriesDb() :
             
         except Exception as error:
             print("Message Error :  ",error)
-       
         
     def showTable(self):
         try:
@@ -54,7 +53,6 @@ class CountriesDb() :
     def insertTable(self,list):
         try :
 
-             
             self.open()
             self.cursor.execute(f"INSERT INTO {self.table} (Región,City,Language,Time) VALUES (?, ?, ? ,?)",list)
             self.con.commit()
