@@ -27,9 +27,17 @@ class CountriesDb() :
     def closeConnection(self):
         self.con.close()
 
+    def cleanTable(self):
+        try :
+            self.cursor.execute(f"DELETE FROM {self.table}")
+            self.con.commit()
+        except Exception as error:
+            print(error)
+
+
     def createTable(self):
         try :
-            self.cursor.execute(f""" CREATE TABLE IF NOT EXISTS  {self.table}  (
+            self.cursor.execute(f""" CREATE TABLE IF NOT EXISTS {self.table}  (
                                       codigo integer primary key autoincrement,
                                       Región text,
                                       City Name text,
@@ -44,7 +52,10 @@ class CountriesDb() :
 
     def insertTable(self,list):
         try :
+
+             
             self.abrir()
+            self.cleanTable()
             self.cursor.execute(f"INSERT INTO {self.table} (Región,City,Language,Time) VALUES (?, ?, ? ,?)",list)
             self.con.commit()
         except Exception as error:
@@ -59,5 +70,4 @@ class CountriesDb() :
             
         except Exception as error:
             print("Message Error :  ",error)
-        # Cursor class is an instance using which you can invoke methods that execute SQLite statements, fetch data from the result sets of the queries.
 

@@ -4,17 +4,15 @@ import time
 from ..utils.encrypt import Encrypt
 from ..config.database import CountriesDb
 
-
-
 class Country():
 
-    def __init__(self,):
-        self.initial_time=time.time()
+    def __init__(self,name):
+
         self.rows=[]
-        self.country_db=CountriesDb("country")
+        self.country_db=CountriesDb(name)
         self.dataframe=None
         
-    def getCountries(self,url):
+    def getCountries(self,url,initial_time):
 
         try :
             response=requests.get(f'{url}').json()
@@ -26,13 +24,13 @@ class Country():
                 languajes={value for value in languajes.values()} if languajes is not None else ["Not Registered"]
                 languajes="-".join(languajes)
                 encryptLanguaje= Encrypt(languajes).encryptData()
-                self.rows.append([region,city,encryptLanguaje, round( (time.time() * 1000) - (self.initial_time *  1000) ,5)])
+                self.rows.append([region,city,encryptLanguaje, time.time() - initial_time ])
  
         except Exception as error:
             print("Message : ",  error)
 
     def createDataFrame(self):
-        self.dataframe = pd.DataFrame(self.rows, columns=["Region", "Country", "Language", "Time"])
+        self.dataframe = pd.DataFrame(self.rows, columns=["Región", "City", "Language", "Time"])
 
     def insertCountries(self):
 
@@ -44,10 +42,10 @@ class Country():
 
     def getTimes(self):
 
-        print(f"Tiempo total: { self.dataframe['Time'].sum()} s")
-        print(f"Tiempo promedio: {self.dataframe['Time'].mean()} s")
-        print(f"Tiempo minimo: { self.dataframe['Time'].min()} s")
-        print(f"Tiempo maximo: { self.dataframe['Time'].max()} s")
+        print(f"""\nTiempo total: {self.dataframe['Time'].sum()} s
+        \nTiempo promedio: {self.dataframe['Time'].mean()} s
+        \nTiempo minimo: { self.dataframe['Time'].min()} s 
+        \nTiempo maximo: { self.dataframe['Time'].max()} s """)
 
     def create_json(self):
          self.dataframe.to_json(r"./json/countries.json")
